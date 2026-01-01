@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roads of Babel - Logistique Sans Frontières</title>
+    <meta name="description" content="Roads of Babel - Une plateforme moderne de réexpédition de colis (Parcel Forwarding) qui connecte le monde entier. Service de consolidation, estimation de coûts en temps réel et assistant logistique IA.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Outfit', 'Noto Sans Arabic', 'Noto Sans SC', 'sans-serif'],
+              serif: ['Cinzel', 'serif'],
+            },
+            colors: {
+              babbel: {
+                50: '#f4f6f8',
+                100: '#e4e8ec',
+                500: '#3b82f6', 
+                800: '#1e3a8a', // Lapis Lazuli Light
+                900: '#0f172a', // Deep Lapis / Night Sky
+              },
+              gold: {
+                50: '#fffbeb',
+                100: '#fef3c7',
+                200: '#fde68a',
+                300: '#fcd34d',
+                400: '#fbbf24',
+                500: '#d97706', // Babel Gold
+                600: '#b45309',
+                700: '#92400e',
+                800: '#78350f',
+                900: '#451a03',
+              },
+              clay: {
+                500: '#be123c', // Babylonian Brick accent
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        font-family: 'Outfit', 'Noto Sans Arabic', 'Noto Sans SC', sans-serif;
+        background-color: #f8fafc;
+      }
+      h1, h2, h3, h4, .font-serif {
+        font-family: 'Cinzel', serif;
+      }
+      /* Custom scrollbar for chat */
+      .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+      }
+      .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+      }
+      
+      /* RTL Support helpers */
+      [dir="rtl"] .font-serif {
+        font-family: 'Noto Sans Arabic', sans-serif; /* Cinzel doesn't support Arabic */
+        font-weight: 800;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.1/",
+    "react/": "https://esm.sh/react@^19.2.1/",
+    "react": "https://esm.sh/react@^19.2.1",
+    "lucide-react": "https://esm.sh/lucide-react@^0.559.0",
+    "recharts": "https://esm.sh/recharts@^3.5.1",
+    "@google/genai": "https://esm.sh/@google/genai@^1.32.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

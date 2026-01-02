@@ -13,7 +13,7 @@ import {
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppView, LanguageCode } from './types';
 import { WAREHOUSES, TRANSLATIONS } from './constants';
-import { Globe } from 'lucide-react';
+import { Globe, Coins, Bitcoin, Wallet } from 'lucide-react';
 
 const MainContent = () => {
   const [currentView, setCurrentView] = useState<AppView>(AppView.HOME);
@@ -73,74 +73,51 @@ const MainContent = () => {
 
       <Assistant currentLang={currentLang} />
 
-      <footer className="bg-babbel-900 text-white border-t border-babbel-800 pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid md:grid-cols-4 gap-12 mb-12">
-            <div className="col-span-1 md:col-span-1">
-              <div className="flex items-center gap-2 mb-4 group cursor-pointer" onClick={() => setCurrentView(AppView.HOME)}>
-                <div className="bg-white text-babbel-900 p-2 rounded-lg shadow-lg">
-                  <Globe className="w-5 h-5" />
-                </div>
-                <span className="font-serif font-bold text-lg text-white">Roads of Babel</span>
+      <footer className="bg-babbel-900 text-white py-12 border-t border-babbel-800 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-babbel-900 via-gold-500 to-babbel-900"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid md:grid-cols-4 gap-8 relative z-10">
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="bg-white/10 p-2 rounded-lg">
+                <Globe className="w-6 h-6 text-gold-500" />
               </div>
-              <p className="text-babbel-200 text-sm leading-relaxed">
-                {(t as any).footer_tagline}
-              </p>
+              <span className="font-serif font-bold text-xl tracking-wide">Roads of Babel</span>
             </div>
-
-            <div>
-              <h4 className="font-serif font-bold text-white mb-6">{(t as any).footer_service}</h4>
-              <ul className="space-y-4 text-sm text-babbel-200">
-                <li>
-                  <button onClick={() => setCurrentView(AppView.VAT_REFUND)} className="hover:text-gold-500 transition flex items-center gap-2">
-                    {(t as any).feature_offtax}
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setCurrentView(AppView.SMART_CONSOLIDATION)} className="hover:text-gold-500 transition flex items-center gap-2">
-                    {(t as any).f_consolidation_title}
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => setCurrentView(AppView.FAQ)} className="hover:text-gold-500 transition flex items-center gap-2">
-                    {(t as any).faq_title}
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-serif font-bold text-white mb-6">{(t as any).footer_legal}</h4>
-              <ul className="space-y-4 text-sm text-babbel-200">
-                <li><button onClick={() => setCurrentView(AppView.TERMS)} className="hover:text-gold-500 transition">{(t as any).footer_legal_terms}</button></li>
-                <li><button onClick={() => setCurrentView(AppView.PRIVACY)} className="hover:text-gold-500 transition">{(t as any).footer_legal_privacy}</button></li>
-                <li><button onClick={() => setCurrentView(AppView.LEGAL_NOTICES)} className="hover:text-gold-500 transition">{(t as any).footer_legal_notices}</button></li>
-                <li><button onClick={() => setCurrentView(AppView.PROHIBITED_ITEMS)} className="hover:text-red-400 transition text-red-300 font-medium">{(t as any).prohibited_footer_link}</button></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-serif font-bold text-white mb-6">{(t as any).warehouses_title}</h4>
-              <div className="grid grid-cols-2 gap-2 text-sm text-babbel-200 rtl:text-right">
-                {WAREHOUSES.map(w => (
-                  <span key={w.id} className="flex items-center gap-2">
-                    <span>{w.flag}</span> {getTrans(`wh_${w.id}`)}
-                  </span>
-                ))}
-              </div>
+            <p className="text-gray-400 max-w-sm text-sm leading-relaxed">
+              {t.footer_tagline} <br/>
+              {t.step_header_desc}
+            </p>
+            <div className="flex gap-4 mt-6">
+               <Coins className="w-5 h-5 text-gray-500 hover:text-white transition cursor-pointer" />
+               <Bitcoin onClick={() => setCurrentView(AppView.BITCOIN)} className="w-5 h-5 text-gray-500 hover:text-gold-500 transition cursor-pointer hover:scale-125 duration-300" />
+               <Wallet className="w-5 h-5 text-gray-500 hover:text-white transition cursor-pointer" />
             </div>
           </div>
-
-          <div className="border-t border-babbel-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-babbel-400">
-            <p>© {new Date().getFullYear()} Roads of Babel SAS. {(t as any).footer_rights}</p>
-            <div className="flex gap-4">
-              <span className="hover:text-white cursor-pointer transition">Twitter</span>
-              <span className="hover:text-white cursor-pointer transition">LinkedIn</span>
-              <span className="hover:text-white cursor-pointer transition">Instagram</span>
-            </div>
+          <div>
+            <h4 className="font-serif font-bold mb-4 text-gold-500">{t.footer_service}</h4>
+            <ul className="space-y-2 text-gray-400 text-sm">
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.PRICING)}>{t.nav_pricing}</li>
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.VAT_REFUND)}>Calculateur Off-Tax</li>
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.SMART_CONSOLIDATION)}>Consolidation Intelligente</li>
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.PROHIBITED_ITEMS)}>{t.prohibited_footer_link}</li>
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.FAQ)}>FAQ</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-serif font-bold mb-4 text-gold-500">{t.footer_legal}</h4>
+            <ul className="space-y-2 text-gray-400 text-sm">
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.TERMS)}>{t.footer_legal_terms}</li>
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.PRIVACY)}>{t.footer_legal_privacy}</li>
+              <li className="hover:text-white cursor-pointer transition" onClick={() => setCurrentView(AppView.LEGAL_NOTICES)}>{t.footer_legal_notices}</li>
+            </ul>
           </div>
         </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 pt-8 border-t border-babbel-800 text-center text-gray-500 text-xs">
+          © 2024 Roads of Babel. {t.footer_rights}
+        </div>
       </footer>
+
     </div>
   );
 };

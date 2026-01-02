@@ -1,9 +1,19 @@
 
 import React from 'react';
-import { Globe, Ticket, Bitcoin, Box, Globe2, Landmark, BoxSelect, ArrowRight } from 'lucide-react';
+import { Globe, Ticket, Bitcoin, Box, Globe2, Landmark, BoxSelect, ArrowRight, MapPin, ShieldCheck, Plane } from 'lucide-react';
 import { TRANSLATIONS, WAREHOUSES } from '../constants';
 import { AppView, LanguageCode } from '../types';
 import { Simulator } from './Simulator';
+
+const FeatureCard = ({ icon, title, desc, color }: { icon: React.ReactNode, title: string, desc: string, color: string }) => (
+  <div className="bg-white p-8 rounded-3xl shadow-lg shadow-gray-200/50 border border-gray-100 hover:-translate-y-2 transition duration-500 group">
+    <div className={`w-16 h-16 rounded-2xl ${color} flex items-center justify-center mb-6 shadow-xl rotate-3 group-hover:rotate-12 transition duration-500`}>
+      {icon}
+    </div>
+    <h3 className="text-xl font-serif font-bold text-gray-900 mb-3">{title}</h3>
+    <p className="text-gray-600 leading-relaxed text-sm">{desc}</p>
+  </div>
+);
 
 interface HomeProps {
   currentLang: LanguageCode;
@@ -99,11 +109,11 @@ export const CountryStrip: React.FC<{ currentLang: LanguageCode }> = ({ currentL
     <div className="bg-babbel-900 py-12 border-y border-babbel-800 shadow-inner relative overflow-hidden">
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5"></div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-        <div className="flex flex-wrap justify-center gap-6 md:gap-12 items-center">
+        <div className="flex flex-wrap justify-between items-center gap-y-8">
           {WAREHOUSES.map((w) => (
-             <div key={w.id} className="flex flex-col items-center gap-2 group select-none transition duration-300">
+             <div key={w.id} className="flex flex-col items-center gap-2 group select-none transition duration-300 min-w-[100px]">
                 <span className="text-4xl filter drop-shadow-lg transform group-hover:scale-110 transition-transform duration-300">{w.flag}</span>
-                <span className="font-serif font-bold text-xs tracking-[0.2em] uppercase text-babbel-200 group-hover:text-gold-400 transition-colors">{getTrans(`wh_${w.id}`)}</span>
+                <span className="font-serif font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase text-babbel-200 group-hover:text-gold-400 transition-colors whitespace-nowrap">{getTrans(`wh_${w.id}`)}</span>
              </div>
           ))}
         </div>
@@ -116,60 +126,35 @@ export const FeaturesGrid: React.FC<HomeProps> = ({ currentLang, setCurrentView 
   const t = TRANSLATIONS[currentLang];
 
   return (
-    <section className="py-24 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid md:grid-cols-3 gap-8">
-          
-          <div 
-            onClick={() => setCurrentView(AppView.ADDRESSES)} 
-            className="group relative p-8 rounded-3xl bg-white border border-gray-100 shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:shadow-babbel-900/10 transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-2"
-          >
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-babbel-900 to-babbel-600 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-            
-            <div className="w-16 h-16 bg-babbel-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-babbel-900 transition-colors duration-300">
-              <Globe2 className="w-8 h-8 text-babbel-900 group-hover:text-gold-500 transition-colors duration-300" />
+ <section className="py-24 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div onClick={() => setCurrentView(AppView.ADDRESSES)} className="cursor-pointer">
+              <FeatureCard 
+                icon={<MapPin className="w-8 h-8 text-white" />}
+                title={t.f_address_title}
+                desc={t.f_address_desc}
+                color="bg-babbel-900"
+              />
             </div>
-            
-            <h3 className="text-2xl font-bold mb-4 font-serif text-gray-900">{(t as any).f_address_title}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              {(t as any).f_address_desc}
-            </p>
-          </div>
-
-          <div 
-            onClick={() => setCurrentView(AppView.VAT_REFUND)} 
-            className="group relative p-8 rounded-3xl bg-white border border-gray-100 shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:shadow-babbel-900/10 transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-2"
-          >
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-green-700 to-green-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-
-            <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-green-800 transition-colors duration-300">
-              <Landmark className="w-8 h-8 text-green-700 group-hover:text-green-300 transition-colors duration-300" />
+            <div onClick={() => setCurrentView(AppView.VAT_REFUND)} className="cursor-pointer">
+              <FeatureCard 
+                icon={<ShieldCheck className="w-8 h-8 text-white" />}
+                title={t.f_tax_title}
+                desc={t.f_tax_desc}
+                color="bg-gold-500"
+              />
             </div>
-
-            <h3 className="text-2xl font-bold mb-4 font-serif text-gray-900">{(t as any).f_tax_title}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              {(t as any).f_tax_desc}
-            </p>
-          </div>
-
-          <div 
-            onClick={() => setCurrentView(AppView.SMART_CONSOLIDATION)} 
-            className="group relative p-8 rounded-3xl bg-white border border-gray-100 shadow-lg shadow-gray-200/50 hover:shadow-2xl hover:shadow-babbel-900/10 transition-all duration-300 cursor-pointer overflow-hidden hover:-translate-y-2"
-          >
-            <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-700 to-blue-500 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-
-            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-blue-800 transition-colors duration-300">
-              <BoxSelect className="w-8 h-8 text-blue-700 group-hover:text-blue-200 transition-colors duration-300" />
+            <div onClick={() => setCurrentView(AppView.SMART_CONSOLIDATION)} className="cursor-pointer">
+              <FeatureCard 
+                icon={<Plane className="w-8 h-8 text-white" />}
+                title={t.f_consolidation_title}
+                desc={t.f_consolidation_desc}
+                color="bg-clay-500"
+              />
             </div>
-
-            <h3 className="text-2xl font-bold mb-4 font-serif text-gray-900">{(t as any).f_consolidation_title}</h3>
-            <p className="text-gray-500 text-sm leading-relaxed">
-              {(t as any).f_consolidation_desc}
-            </p>
           </div>
-
         </div>
-      </div>
-    </section>
+      </section>
   );
 };

@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
 import { Assistant } from './components/Assistant';
@@ -15,13 +16,41 @@ import { AppView, LanguageCode } from './types';
 import { WAREHOUSES, TRANSLATIONS } from './constants';
 import { Globe, Coins, Bitcoin, Wallet } from 'lucide-react';
 
+const viewToPath: Record<AppView, string> = {
+  [AppView.HOME]: '/',
+  [AppView.DASHBOARD]: '/dashboard',
+  [AppView.PRICING]: '/pricing',
+  [AppView.HOW_IT_WORKS]: '/how-it-works',
+  [AppView.BITCOIN]: '/bitcoin',
+  [AppView.VAT_REFUND]: '/vat-refund',
+  [AppView.SMART_CONSOLIDATION]: '/smart-consolidation',
+  [AppView.ADDRESSES]: '/addresses',
+  [AppView.AUTH]: '/auth',
+  [AppView.PROHIBITED_ITEMS]: '/prohibited-items',
+  [AppView.FAQ]: '/faq',
+  [AppView.TERMS]: '/terms',
+  [AppView.PRIVACY]: '/privacy',
+  [AppView.LEGAL_NOTICES]: '/legal-notices',
+};
+
+const getViewFromPath = (pathname: string) => {
+  const entry = Object.entries(viewToPath).find(([, path]) => path === pathname);
+  return (entry?.[0] as AppView | undefined) ?? AppView.HOME;
+};
+
 const MainContent = () => {
-  const [currentView, setCurrentView] = useState<AppView>(AppView.HOME);
   const [currentLang, setCurrentLang] = useState<LanguageCode>('fr');
   const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentView = useMemo(() => getViewFromPath(location.pathname), [location.pathname]);
 
   const t = TRANSLATIONS[currentLang];
   const getTrans = (key: string) => (t as any)[key] || key;
+
+  const setCurrentView = (view: AppView) => {
+    navigate(viewToPath[view]);
+  };
 
   useEffect(() => {
     document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
@@ -30,13 +59,16 @@ const MainContent = () => {
   // Scroll to top when view changes
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [currentView]);
+  }, [location.pathname]);
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated && currentView === AppView.DASHBOARD) {
-      setCurrentView(AppView.AUTH);
+      navigate(viewToPath[AppView.AUTH], { replace: true });
     }
-  }, [isAuthenticated, currentView, isLoading]);
+    if (!isLoading && isAuthenticated && currentView === AppView.AUTH) {
+      navigate(viewToPath[AppView.DASHBOARD], { replace: true });
+    }
+  }, [isAuthenticated, currentView, isLoading, navigate]);
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
@@ -48,27 +80,32 @@ const MainContent = () => {
       />
 
       <main>
-        {currentView === AppView.HOME && (
-          <>
-            <HeroSection currentLang={currentLang} setCurrentView={setCurrentView} isAuthenticated={!!isAuthenticated} />
-            <CountryStrip currentLang={currentLang} />
-            <FeaturesGrid currentLang={currentLang} setCurrentView={setCurrentView} isAuthenticated={!!isAuthenticated} />
-          </>
-        )}
-        
-        {currentView === AppView.HOW_IT_WORKS && <HowItWorksPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.PRICING && <PricingPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.DASHBOARD && <Dashboard currentLang={currentLang} />}
-        {currentView === AppView.ADDRESSES && <AddressesPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.AUTH && <Auth setView={setCurrentView} />}
-        {currentView === AppView.FAQ && <FAQPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.VAT_REFUND && <VatRefundPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.BITCOIN && <BitcoinPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.SMART_CONSOLIDATION && <SmartConsolidationPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.PROHIBITED_ITEMS && <ProhibitedItemsPage currentLang={currentLang} setCurrentView={setCurrentView} />}
-        {currentView === AppView.LEGAL_NOTICES && <LegalNoticesPage currentLang={currentLang} />}
-        {currentView === AppView.TERMS && <TermsPage currentLang={currentLang} />}
-        {currentView === AppView.PRIVACY && <PrivacyPage currentLang={currentLang} />}
+        <Routes>
+          <Route
+            path={viewToPath[AppView.HOME]}
+            element={(
+              <>
+                <HeroSection currentLang={currentLang} setCurrentView={setCurrentView} isAuthenticated={!!isAuthenticated} />
+                <CountryStrip currentLang={currentLang} />
+                <FeaturesGrid currentLang={currentLang} setCurrentView={setCurrentView} isAuthenticated={!!isAuthenticated} />
+              </>
+            )}
+          />
+          <Route path={viewToPath[AppView.HOW_IT_WORKS]} element={<HowItWorksPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.PRICING]} element={<PricingPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.DASHBOARD]} element={<Dashboard currentLang={currentLang} />} />
+          <Route path={viewToPath[AppView.ADDRESSES]} element={<AddressesPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.AUTH]} element={<Auth setView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.FAQ]} element={<FAQPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.VAT_REFUND]} element={<VatRefundPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.BITCOIN]} element={<BitcoinPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.SMART_CONSOLIDATION]} element={<SmartConsolidationPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.PROHIBITED_ITEMS]} element={<ProhibitedItemsPage currentLang={currentLang} setCurrentView={setCurrentView} />} />
+          <Route path={viewToPath[AppView.LEGAL_NOTICES]} element={<LegalNoticesPage currentLang={currentLang} />} />
+          <Route path={viewToPath[AppView.TERMS]} element={<TermsPage currentLang={currentLang} />} />
+          <Route path={viewToPath[AppView.PRIVACY]} element={<PrivacyPage currentLang={currentLang} />} />
+          <Route path="*" element={<Navigate to={viewToPath[AppView.HOME]} replace />} />
+        </Routes>
       </main>
 
       <Assistant currentLang={currentLang} />
@@ -123,9 +160,11 @@ const MainContent = () => {
 };
 
 const App = () => (
-  <AuthProvider>
-    <MainContent />
-  </AuthProvider>
+  <BrowserRouter>
+    <AuthProvider>
+      <MainContent />
+    </AuthProvider>
+  </BrowserRouter>
 );
 
 export default App;
